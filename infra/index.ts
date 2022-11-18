@@ -14,6 +14,7 @@ const fn = new lambda.CallbackFunction("fn", {
 
 // A REST API to route requests to HTML content and the Lambda function
 const api = new RestAPI("api", {
+    stageName: 'v1',
     routes: [
         { path: "/", localPath: "www"},
         { path: "/date", method: "GET", eventHandler: fn },
