@@ -35,3 +35,4 @@ jobs:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         # PULUMI_CI: pr
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: echo "My API URL is ${{ steps.pulumi.outputs.url }}"
