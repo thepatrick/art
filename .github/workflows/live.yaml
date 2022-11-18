@@ -1,0 +1,38 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    name: Pulumi Preview
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1-node16
+      with:
+        aws-region: us-east-1
+        role-to-assume: ${{ secrets.PULUMI_MERGE_ROLE_ARN }}
+        role-session-name: art-merge
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+    - run: npm install
+      working-directory: ./infra
+    - uses: pulumi/actions@v3
+      id: pulumi
+      with:
+        command: up
+        stack-name: dev
+        work-dir: ./infra
+      env:
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    - run: echo "My API URL is ${{ steps.pulumi.outputs.url }}"
