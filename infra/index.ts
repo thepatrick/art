@@ -1,9 +1,9 @@
-import * as pulumi from "@pulumi/pulumi";
-import * as aws from "@pulumi/aws";
-import * as apigateway from "@pulumi/aws-apigateway";
+// import * as pulumi from "@pulumi/pulumi";
+import { lambda } from "@pulumi/aws";
+import { RestAPI } from "@pulumi/aws-apigateway";
 
 // A Lambda function to invoke
-const fn = new aws.lambda.CallbackFunction("fn", {
+const fn = new lambda.CallbackFunction("fn", {
     callback: async (ev, ctx) => {
         return {
             statusCode: 200,
@@ -13,7 +13,7 @@ const fn = new aws.lambda.CallbackFunction("fn", {
 })
 
 // A REST API to route requests to HTML content and the Lambda function
-const api = new apigateway.RestAPI("api", {
+const api = new RestAPI("api", {
     routes: [
         { path: "/", localPath: "www"},
         { path: "/date", method: "GET", eventHandler: fn },
