@@ -10,7 +10,7 @@ jobs:
       contents: read
     name: Pulumi Preview
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 1
     - name: Configure AWS Credentials
@@ -20,7 +20,7 @@ jobs:
         role-to-assume: ${{ secrets.PULUMI_READONLY_ROLE_ARN }}
         role-session-name: art-preview
     - name: Use Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '18'
     - run: npm install
