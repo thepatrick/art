@@ -3,14 +3,22 @@ import { mkLambda } from "../../helpers/mkLambda";
 import { DynamoDB } from "aws-sdk";
 import { nanoid } from "nanoid";
 import { Surface, surfaceTable } from "../../tables/surfaceTable";
+import {
+  captureAWSClient,
+  getSegment,
+  Segment,
+  captureAsyncFunc
+} from "aws-xray-sdk-core";
 
 export const registerSurface = surfaceTable.name.apply((tableName) =>
   mkLambda(
     "registerSurface",
     async (ev, ctx) => {
-      const dynamo = new DynamoDB();
-
       const owner = ev.requestContext.authorizer.jwt.claims.sub;
+      (getSegment() as Segment).setUser(`${owner}`);
+
+      const dynamo = captureAWSClient(new DynamoDB());
+
       const id = nanoid();
 
       const item: Surface = {
