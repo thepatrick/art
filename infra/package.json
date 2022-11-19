@@ -1,12 +1,11 @@
 {
 	"name": "art-infra",
 	"devDependencies": {
+		"@types/aws-lambda": "^8.10.108",
 		"@types/node": "^18.0.0"
 	},
 	"dependencies": {
 		"@pulumi/aws": "5.21.0",
-		"@pulumi/aws-apigateway": "^0.0.11",
-		"@pulumi/awsx": "^1.0.0-beta",
 		"@pulumi/pulumi": "^3.0.0",
 		"typescript": "^4.0.0"
 	}
