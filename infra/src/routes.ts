@@ -1,11 +1,12 @@
 import { lambda } from "@pulumi/aws";
+import { Input } from "@pulumi/pulumi";
 import { listSurfaces, registerSurface } from "../handlers/registerScreen";
 import { testAuth } from "../handlers/testAuth";
 
 interface LambdaRoute {
   method: "GET" | "POST";
   path: string;
-  lambda: lambda.Function;
+  lambda: Input<lambda.Function>;
   scopes: string[];
   description: string;
 }
