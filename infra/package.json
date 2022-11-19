@@ -1,8 +1,8 @@
 {
 	"name": "art-infra",
 	"devDependencies": {
-		"@types/node": "^18.0.0",
-		"aws-lambda": "^1.0.7"
+		"@types/aws-lambda": "^8.10.108",
+		"@types/node": "^18.0.0"
 	},
 	"dependencies": {
 		"@pulumi/aws": "5.21.0",
