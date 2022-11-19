@@ -1,6 +1,6 @@
 // import * as pulumi from "@pulumi/pulumi";
 import { apigatewayv2, iam, lambda } from "@pulumi/aws";
-import { getProject, getStack } from "@pulumi/pulumi";
+import { getProject, getStack, Input, output } from "@pulumi/pulumi";
 import { apiRole } from "./roles/apiRole";
 import { LambdaRoute } from "./helpers/LambdaRoute";
 import { routes } from "./src/routes";
@@ -28,13 +28,15 @@ const authorizer = new apigatewayv2.Authorizer("art-apigw/authorizer", {
   }
 });
 
-const base: { lambdas: lambda.Function[]; dependRoutes: apigatewayv2.Route[] } =
-  {
-    lambdas: [],
-    dependRoutes: []
-  };
+const base: {
+  lambdas: Input<lambda.Function>[];
+  dependRoutes: apigatewayv2.Route[];
+} = {
+  lambdas: [],
+  dependRoutes: []
+};
 
-const output = routes.reduce((prev, curr) => {
+const routesOutput = routes.reduce((prev, curr) => {
   const lambdaRoute = new LambdaRoute(`art-apigw/${curr.method}${curr.path}`, {
     api,
     description: curr.description,
@@ -60,7 +62,7 @@ const apiDeployment = new apigatewayv2.Deployment(
     description: `${getProject()}-${getStack()} API`,
     apiId: api.id
   },
-  { dependsOn: output.dependRoutes }
+  { dependsOn: routesOutput.dependRoutes }
 );
 
 new iam.RolePolicy("art-apigw/lambda-access", {
@@ -71,7 +73,7 @@ new iam.RolePolicy("art-apigw/lambda-access", {
       {
         Effect: "Allow",
         Action: "lambda:*",
-        Resource: output.lambdas.map((lambda) => lambda.arn)
+        Resource: routesOutput.lambdas.map((lambda) => output(lambda).arn)
       }
     ]
   },
