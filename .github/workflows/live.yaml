@@ -10,7 +10,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    name: Pulumi Preview
+    name: Pulumi Up
     steps:
     - uses: actions/checkout@v2
       with:
