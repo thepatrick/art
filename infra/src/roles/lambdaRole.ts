@@ -1,6 +1,6 @@
 import { iam } from "@pulumi/aws";
 import { getProject, getStack } from "@pulumi/pulumi";
-import { surfaceTable } from "../handlers/surfaceTable";
+import { surfaceTable } from "../tables/surfaceTable";
 import { assumeRolePolicy } from "./assumeRolePolicy";
 import { betterRoleName } from "./betterRoleName";
 

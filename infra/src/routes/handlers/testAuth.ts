@@ -1,5 +1,5 @@
-import { lambdaRole } from "../roles/lambdaRole";
-import { mkLambda } from "./mkLambda";
+import { lambdaRole } from "../../roles/lambdaRole";
+import { mkLambda } from "../../helpers/mkLambda";
 
 export const testAuth = mkLambda(
   "testAuth",

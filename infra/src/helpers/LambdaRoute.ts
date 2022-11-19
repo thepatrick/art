@@ -1,10 +1,11 @@
-import { apigatewayv2, lambda } from "@pulumi/aws";
+import { apigatewayv2, iam, lambda } from "@pulumi/aws";
 import { Role } from "@pulumi/aws/iam";
 import {
   ComponentResource,
   ComponentResourceOptions,
   Input,
   interpolate,
+  Output,
   output
 } from "@pulumi/pulumi";
 
@@ -88,3 +89,51 @@ export class LambdaRoute extends ComponentResource {
     this.route = route;
   }
 }
+
+export interface LambdaRouteInfo {
+  method: "GET" | "POST";
+  path: string;
+  lambda: Input<lambda.Function>;
+  scopes: string[];
+  description: string;
+}
+
+interface LearnedRoutes {
+  lambdas: Output<lambda.Function>[];
+  dependRoutes: apigatewayv2.Route[];
+}
+
+export const mkRoutes = (
+  routes: LambdaRouteInfo[],
+  api: apigatewayv2.Api,
+  apiRole: iam.Role,
+  authorizer: apigatewayv2.Authorizer
+) => {
+  const base: LearnedRoutes = {
+    lambdas: [],
+    dependRoutes: []
+  };
+
+  return routes.reduce((prev, curr) => {
+    const lambdaRoute = new LambdaRoute(
+      `art-apigw/${curr.method}${curr.path}`,
+      {
+        api,
+        description: curr.description,
+        apiRole,
+        lambda: curr.lambda,
+        routeKey: `${curr.method} ${curr.path}`,
+        authorization: {
+          scopes: curr.scopes,
+          id: authorizer.id,
+          type: "JWT"
+        }
+      }
+    );
+
+    return {
+      lambdas: [...prev.lambdas, output(curr.lambda)],
+      dependRoutes: [...prev.dependRoutes, lambdaRoute.route]
+    };
+  }, base);
+};

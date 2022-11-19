@@ -1,8 +1,8 @@
-import { lambdaRole } from "../roles/lambdaRole";
-import { mkLambda } from "./mkLambda";
+import { lambdaRole } from "../../roles/lambdaRole";
+import { mkLambda } from "../../helpers/mkLambda";
 import { DynamoDB } from "aws-sdk";
 import { nanoid } from "nanoid";
-import { Surface, surfaceTable } from "./surfaceTable";
+import { Surface, surfaceTable } from "../../tables/surfaceTable";
 
 export const registerSurface = surfaceTable.name.apply((tableName) =>
   mkLambda(
