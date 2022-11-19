@@ -7,14 +7,14 @@ import {
   interpolate
 } from "@pulumi/pulumi";
 
-interface RouteArgs<LambdaE, LambdaR> {
+interface RouteArgs {
   api: apigatewayv2.Api;
   description: string;
   connectionType?: "INTERNET" | "VPC_LINK";
   apiRole: Role;
   passthroughBehavior?: "WHEN_NO_MATCH" | "WHEN_NO_TEMPLATES" | "NEVER";
   timeoutMilliseconds?: number; // default: 29000,
-  lambda: lambda.CallbackFunction<LambdaE, LambdaR>;
+  lambda: lambda.Function;
   routeKey: string;
   authorization?: {
     scopes: string[];
@@ -23,7 +23,7 @@ interface RouteArgs<LambdaE, LambdaR> {
   };
 }
 
-export class LambdaRoute<LambdaE, LambdaR> extends ComponentResource {
+export class LambdaRoute extends ComponentResource {
   route: apigatewayv2.Route;
 
   constructor(
@@ -38,7 +38,7 @@ export class LambdaRoute<LambdaE, LambdaR> extends ComponentResource {
       lambda,
       routeKey,
       authorization
-    }: RouteArgs<LambdaE, LambdaR>,
+    }: RouteArgs,
     opts?: ComponentResourceOptions
   ) {
     super("p2-network:apigw:Route", name, {}, opts);

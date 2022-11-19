@@ -1,20 +1,9 @@
 // import * as pulumi from "@pulumi/pulumi";
 import { apigatewayv2, iam, lambda } from "@pulumi/aws";
 import { getProject, getStack } from "@pulumi/pulumi";
-import { APIGatewayProxyEventV2WithJWTAuthorizer } from "aws-lambda";
 import { apiRole } from "./roles/apiRole";
-import { lambdaRole } from "./roles/lambdaRole";
-import { LambdaRoute } from "./Route";
-
-const testAuth = new lambda.CallbackFunction("testAuth", {
-  callback: async (ev: APIGatewayProxyEventV2WithJWTAuthorizer, ctx) => {
-    return {
-      statusCode: 200,
-      body: JSON.stringify(ev)
-    };
-  },
-  role: lambdaRole
-});
+import { LambdaRoute } from "./helpers/LambdaRoute";
+import { routes } from "./src/routes";
 
 const api = new apigatewayv2.Api("art-apigw", {
   protocolType: "HTTP",
@@ -39,35 +28,31 @@ const authorizer = new apigatewayv2.Authorizer("art-apigw/authorizer", {
   }
 });
 
-const lambdaAccess: iam.PolicyDocument = {
-  Version: "2012-10-17",
-  Statement: [
-    {
-      Effect: "Allow",
-      Action: "lambda:*",
-      Resource: [testAuth.arn]
+const base: { lambdas: lambda.Function[]; dependRoutes: apigatewayv2.Route[] } =
+  {
+    lambdas: [],
+    dependRoutes: []
+  };
+
+const output = routes.reduce((prev, curr) => {
+  const lambdaRoute = new LambdaRoute(`art-apigw/${curr.method}${curr.path}`, {
+    api,
+    description: curr.description,
+    apiRole,
+    lambda: curr.lambda,
+    routeKey: `${curr.method} ${curr.path}`,
+    authorization: {
+      scopes: curr.scopes,
+      id: authorizer.id,
+      type: "JWT"
     }
-  ]
-};
+  });
 
-new iam.RolePolicy("art-apigw/lambda-access", {
-  namePrefix: "LambdaAccess",
-  policy: lambdaAccess,
-  role: apiRole.name
-});
-
-const whoami = new LambdaRoute("art-apigw/whoami", {
-  api,
-  description: "Whoami?",
-  apiRole,
-  lambda: testAuth,
-  routeKey: "GET /echo",
-  authorization: {
-    scopes: ["surface"],
-    id: authorizer.id,
-    type: "JWT"
-  }
-});
+  return {
+    lambdas: [...prev.lambdas, curr.lambda],
+    dependRoutes: [...prev.dependRoutes, lambdaRoute.route]
+  };
+}, base);
 
 const apiDeployment = new apigatewayv2.Deployment(
   "art-apigw/deployment",
@@ -75,8 +60,23 @@ const apiDeployment = new apigatewayv2.Deployment(
     description: `${getProject()}-${getStack()} API`,
     apiId: api.id
   },
-  { dependsOn: [whoami.route] }
+  { dependsOn: output.dependRoutes }
 );
+
+new iam.RolePolicy("art-apigw/lambda-access", {
+  name: "LambdaAccess",
+  policy: {
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Effect: "Allow",
+        Action: "lambda:*",
+        Resource: output.lambdas.map((lambda) => lambda.arn)
+      }
+    ]
+  },
+  role: apiRole.name
+});
 
 const apiStage = new apigatewayv2.Stage("art-apigw/stage", {
   deploymentId: apiDeployment.id,
