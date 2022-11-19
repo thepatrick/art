@@ -4,7 +4,8 @@ import {
   ComponentResource,
   ComponentResourceOptions,
   Input,
-  interpolate
+  interpolate,
+  output
 } from "@pulumi/pulumi";
 
 interface RouteArgs {
@@ -14,7 +15,7 @@ interface RouteArgs {
   apiRole: Role;
   passthroughBehavior?: "WHEN_NO_MATCH" | "WHEN_NO_TEMPLATES" | "NEVER";
   timeoutMilliseconds?: number; // default: 29000,
-  lambda: lambda.Function;
+  lambda: Input<lambda.Function>;
   routeKey: string;
   authorization?: {
     scopes: string[];
@@ -55,7 +56,7 @@ export class LambdaRoute extends ComponentResource {
         integrationType: "AWS_PROXY",
         integrationMethod: "POST",
         payloadFormatVersion: "2.0",
-        integrationUri: lambda.invokeArn
+        integrationUri: output(lambda).invokeArn
       },
       { parent: this }
     );
