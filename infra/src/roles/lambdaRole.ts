@@ -21,7 +21,7 @@ new iam.RolePolicy("art-lambda/dynaodb", {
     Statement: [
       {
         Effect: "Allow",
-        Action: ["dynamodb:Get*", "dynamodb:Put*"],
+        Action: ["dynamodb:Get*", "dynamodb:Put*", "dynamodb:Query*"],
         Resource: surfaceTable.arn
       }
     ]
