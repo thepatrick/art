@@ -1,5 +1,6 @@
 import { LambdaRouteInfo } from "../helpers/LambdaRoute";
-import { listSurfaces, registerSurface } from "./handlers/registerScreen";
+import { registerSurface } from "./handlers/registerSurface";
+import { listSurfaces } from "./handlers/listSurfaces";
 import { testAuth } from "./handlers/testAuth";
 
 export const routes: LambdaRouteInfo[] = [
