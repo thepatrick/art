@@ -18,3 +18,7 @@ tasks:
   list-surfaces:
     cmds:
       - ./dev-curl.sh -v https://fc103km01j.execute-api.ap-southeast-2.amazonaws.com/v1/surface
+
+  hello-surface:
+    cmds:
+      - ./dev-curl.sh -v https://fc103km01j.execute-api.ap-southeast-2.amazonaws.com/v1/surface/{{.SURFACE}}/hello
