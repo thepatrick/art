@@ -2,6 +2,7 @@ import { LambdaRouteInfo } from "../helpers/LambdaRoute";
 import { registerSurface } from "./handlers/registerSurface";
 import { listSurfaces } from "./handlers/listSurfaces";
 import { testAuth } from "./handlers/testAuth";
+import { helloSurface } from "./handlers/helloSurface";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -24,5 +25,12 @@ export const routes: LambdaRouteInfo[] = [
     lambda: listSurfaces,
     scopes: ["surface"],
     description: "List user's surfaces"
+  },
+  {
+    method: "GET",
+    path: "/surface/{surfaceId}/hello",
+    lambda: helloSurface,
+    scopes: ["surface"],
+    description: "Initialisation information for a given surface"
   }
 ];

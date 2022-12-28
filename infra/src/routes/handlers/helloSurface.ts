@@ -4,9 +4,9 @@ import { DynamoDB } from "aws-sdk";
 import { surfaceTable } from "../../tables/surfaceTable";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
 
-export const listSurfaces = surfaceTable.name.apply((tableName) =>
+export const helloSurface = surfaceTable.name.apply((tableName) =>
   mkLambda(
-    "listSurfaces",
+    "helloSurface",
     async (ev, ctx) => {
       const owner = ev.requestContext.authorizer.jwt.claims.sub;
 
@@ -22,34 +22,56 @@ export const listSurfaces = surfaceTable.name.apply((tableName) =>
 
       (getSegment() as Segment).setUser(`${owner}`);
 
+      const surfaceId = ev.pathParameters?.surfaceId;
+      if (surfaceId === undefined || surfaceId.length === 0) {
+        return {
+          statusCode: 404,
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({ error: "Surface not found" })
+        };
+      }
+
       const dynamo = captureAWSClient(new DynamoDB());
 
       try {
-        const items = await dynamo
-          .query({
+        const screen = await dynamo
+          .getItem({
             TableName: tableName,
-            KeyConditionExpression: "#owner_id = :owner",
-            ExpressionAttributeNames: {
-              "#owner_id": "Owner"
-            },
-            ExpressionAttributeValues: {
-              ":owner": {
-                S: owner
-              }
-            }
+            Key: DynamoDB.Converter.marshall({
+              Owner: owner,
+              SurfaceId: surfaceId
+            })
+            // ExpressionAttributeNames: {
+            //   "#owner_id": "Owner"
+            // }
           })
           .promise();
 
-        const returnable = items.Items?.map((item) =>
-          DynamoDB.Converter.unmarshall(item)
-        );
+        const item = screen.Item;
+
+        if (item == null) {
+          return {
+            statusCode: 404,
+            headers: {
+              "content-type": "application/json"
+            },
+            body: JSON.stringify({
+              error: "Surface not found",
+              responseError: JSON.stringify(screen.$response.error)
+            })
+          };
+        }
+
+        const returnable = DynamoDB.Converter.unmarshall(item);
 
         return {
           statusCode: 200,
           headers: {
             "content-type": "application/json"
           },
-          body: JSON.stringify({ items: returnable })
+          body: JSON.stringify({ screen: returnable })
         };
       } catch (error) {
         console.log("Error", error);
@@ -60,7 +82,6 @@ export const listSurfaces = surfaceTable.name.apply((tableName) =>
           },
           body: JSON.stringify({
             error: "Nope",
-            // TODO: Remove this (leaking error message)
             message: (error as Error).message
           })
         };
