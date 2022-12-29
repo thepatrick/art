@@ -1,15 +1,11 @@
 import { iam, lambda, s3 } from "@pulumi/aws";
 import { region } from "@pulumi/aws/config";
-import { getProject, getStack } from "@pulumi/pulumi";
 import {
   APIGatewayProxyEventV2WithJWTAuthorizer,
-  APIGatewayProxyStructuredResultV2
+  APIGatewayProxyStructuredResultV2,
+  S3Event
 } from "aws-lambda";
-
-const betterLambdaName = (namePrefix: string) =>
-  `${getProject()}-${getStack()}-${namePrefix
-    .toLocaleLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")}`;
+import { betterLambdaName } from "./betterLambdaName";
 
 const bucket = new s3.Bucket("art-lambdas", {
   bucket: betterLambdaName("lambdas")
@@ -48,4 +44,23 @@ export const mkLambda = (
       `arn:aws:lambda:${region}:901920570463:layer:aws-otel-nodejs-${architecture}-ver-1-7-0:2`
     ]
     // s3Bucket: bucket.bucket
+  });
+
+export const mkS3NotificationLambda = (
+  name: string,
+  callback: lambda.Callback<S3Event, void>,
+  role: iam.Role,
+  architecture: "arm64" | "amd64" = "arm64"
+) =>
+  new lambda.CallbackFunction(name, {
+    name: betterLambdaName(name),
+    callback,
+    architectures: ["arm64"],
+    role,
+    tracingConfig: {
+      mode: "Active"
+    },
+    layers: [
+      `arn:aws:lambda:${region}:901920570463:layer:aws-otel-nodejs-${architecture}-ver-1-7-0:2`
+    ]
   });

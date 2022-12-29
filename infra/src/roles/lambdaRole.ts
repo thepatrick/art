@@ -1,5 +1,7 @@
 import { iam } from "@pulumi/aws";
-import { getProject, getStack } from "@pulumi/pulumi";
+import { getProject, getStack, interpolate } from "@pulumi/pulumi";
+import { assetsBucket } from "../buckets/assets";
+import { assetsTable } from "../tables/assetsTable";
 import { surfaceTable } from "../tables/surfaceTable";
 import { assumeRolePolicy } from "./assumeRolePolicy";
 import { betterRoleName } from "./betterRoleName";
@@ -21,8 +23,28 @@ new iam.RolePolicy("art-lambda/dynaodb", {
     Statement: [
       {
         Effect: "Allow",
-        Action: ["dynamodb:Get*", "dynamodb:Put*", "dynamodb:Query*"],
-        Resource: surfaceTable.arn
+        Action: [
+          "dynamodb:Get*",
+          "dynamodb:Put*",
+          "dynamodb:Update*",
+          "dynamodb:Query*"
+        ],
+        Resource: [surfaceTable.arn, assetsTable.arn]
+      }
+    ]
+  },
+  role: lambdaRole.name
+});
+
+new iam.RolePolicy("art-lambda/s3", {
+  name: "S3",
+  policy: {
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Effect: "Allow",
+        Action: "s3:Put*",
+        Resource: interpolate`${assetsBucket.arn}/*`
       }
     ]
   },
