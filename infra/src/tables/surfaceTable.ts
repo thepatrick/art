@@ -14,7 +14,6 @@ export const surfaceTable = new dynamodb.Table("surfaces", {
     stack: getStack()
   }
 });
-
 export interface Surface {
   Owner: string;
   SurfaceId: string;

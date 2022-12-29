@@ -3,6 +3,7 @@ import { registerSurface } from "./handlers/registerSurface";
 import { listSurfaces } from "./handlers/listSurfaces";
 import { testAuth } from "./handlers/testAuth";
 import { helloSurface } from "./handlers/helloSurface";
+import { uploadAsset } from "./handlers/uploadAsset";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -32,5 +33,12 @@ export const routes: LambdaRouteInfo[] = [
     lambda: helloSurface,
     scopes: ["surface"],
     description: "Initialisation information for a given surface"
+  },
+  {
+    method: "POST",
+    path: "/asset",
+    lambda: uploadAsset,
+    scopes: ["asset:write"],
+    description: "Upload assets"
   }
 ];
