@@ -2,6 +2,7 @@ import { iam } from "@pulumi/aws";
 import { getProject, getStack, interpolate } from "@pulumi/pulumi";
 import { assetsBucket } from "../buckets/assets";
 import { assetsTable } from "../tables/assetsTable";
+import { playlistsTable } from "../tables/playlistsTable";
 import { surfaceTable } from "../tables/surfaceTable";
 import { assumeRolePolicy } from "./assumeRolePolicy";
 import { betterRoleName } from "./betterRoleName";
@@ -29,7 +30,7 @@ new iam.RolePolicy("art-lambda/dynaodb", {
           "dynamodb:Update*",
           "dynamodb:Query*"
         ],
-        Resource: [surfaceTable.arn, assetsTable.arn]
+        Resource: [surfaceTable.arn, assetsTable.arn, playlistsTable.arn]
       }
     ]
   },

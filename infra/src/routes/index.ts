@@ -7,6 +7,7 @@ import { uploadAsset } from "./handlers/uploadAsset";
 import { listAssets } from "./handlers/assets/listAssets";
 import { patchAsset } from "./handlers/assets/patchAsset";
 import { getAsset } from "./handlers/assets/getAsset";
+import { createPlaylist } from "./handlers/playlists/createPlaylist";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -64,5 +65,12 @@ export const routes: LambdaRouteInfo[] = [
     lambda: getAsset,
     scopes: ["asset:write"],
     description: "Update asset metadata"
+  },
+  {
+    method: "POST",
+    path: "/playlist",
+    lambda: createPlaylist,
+    scopes: ["asset:write"],
+    description: "Create a playlist"
   }
 ];
