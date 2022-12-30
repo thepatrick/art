@@ -29,5 +29,9 @@ export interface Asset {
   LastUpdated: number;
   Status: AssetStatus;
   FileSize?: Number;
-  FileName: String;
+  FileName: string;
+  Name?: string;
+  Artist?: string;
+  Source?: string;
+  Notes?: string;
 }

@@ -91,7 +91,7 @@ export class LambdaRoute extends ComponentResource {
 }
 
 export interface LambdaRouteInfo {
-  method: "GET" | "POST";
+  method: "GET" | "POST" | "PATCH";
   path: string;
   lambda: Input<lambda.Function>;
   scopes: string[];
