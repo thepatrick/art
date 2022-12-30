@@ -94,15 +94,21 @@ export const patchAsset = all([assetsTable.name]).apply(([tableName]) =>
                 AssetId: assetId
               }),
               ConditionExpression: "#Owner = :Owner AND AssetId = :AssetId",
-              UpdateExpression: `SET ${updateExpressionParts.join(", ")}`,
+              UpdateExpression: `SET ${updateExpressionParts.join(
+                ", "
+              )}, #lastupdated = :lastupdated`,
               ExpressionAttributeNames: {
                 ...expressionAttributeNames,
-                "#Owner": "Owner"
+                "#Owner": "Owner",
+                "#lastupdated": "LastUpdated"
               },
               ExpressionAttributeValues: {
                 ...expressionAttributeValues,
-                ":Owner": DynamoDB.Converter.input(owner),
-                ":AssetId": DynamoDB.Converter.input(assetId)
+                ...DynamoDB.Converter.marshall({
+                  ":Owner": owner,
+                  ":AssetId": assetId,
+                  ":lastupdated": Date.now()
+                })
               }
             })
             .promise();
