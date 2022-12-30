@@ -77,15 +77,18 @@ export const processAsset = all([assetsTable.name]).apply(([tableName]) =>
                 Owner: owner,
                 AssetId: assetId
               }),
-              UpdateExpression: "SET #filesize = :filesize, #status = :status",
+              UpdateExpression:
+                "SET #filesize = :filesize, #status = :status, #lastupdated = :lastupdated",
               ExpressionAttributeNames: {
                 "#filesize": "FileSize",
-                "#status": "Status"
+                "#status": "Status",
+                "#lastupdated": "LastUpdated"
               },
-              ExpressionAttributeValues: {
-                ":filesize": { N: object.size.toString() },
-                ":status": { S: AssetStatus.Uploaded }
-              }
+              ExpressionAttributeValues: DynamoDB.Converter.marshall({
+                ":filesize": object.size,
+                ":status": AssetStatus.Uploaded,
+                ":lastupdated": Date.now()
+              })
             })
             .promise();
 

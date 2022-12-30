@@ -9,3 +9,5 @@
 - infra: add a Playlist model - Owner, PlaylistId, Name, Scenes: List(Assets: List(AssetId), Duration)
 - infra: add a `PUT /playlist` to create a playlist
   - cli: add a `task create-playlist NAME="some name"`
+- infra: processAsset should update Asset.LastUpdated
+- infra: patchAsset should update Asset.LastUpdated

@@ -2,8 +2,6 @@
 
 ## Make it usable
 
-- infra: processAsset should update Asset.LastUpdated
-- infra: patchAsset should update Asset.LastUpdated
 - infra: add a `GET /playlist` to list existing playlists
   - cli: add a `task list-playlists`
 - infra: add a `DELETE /playlist/{playlistId}`
