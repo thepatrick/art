@@ -40,3 +40,10 @@ tasks:
         sh: doppler secrets get ART_CLI_BASE --plain
     cmds:
       - doppler run ./curl.sh {{.ART_CLI_BASE}}/asset/{{.ASSET_ID}}
+
+  create-playlist:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - 'doppler run -- ./curl.sh -X POST -H "content-type: application/json" -d{{.BODY | shellQuote}} {{.ART_CLI_BASE}}/playlist'

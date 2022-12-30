@@ -2,10 +2,8 @@
 
 ## Make it usable
 
-- infra: make `PATCH /asset/{assetId}` with an invalid assetId error better than "something went wrong"
-- infra: add a Playlist model - Owner, PlaylistId, Name, Scenes: List(Assets: List(AssetId), Duration)
-- infra: add a `PUT /playlist` to create a playlist
-  - cli: add a `task create-playlist NAME="some name"`
+- infra: processAsset should update Asset.LastUpdated
+- infra: patchAsset should update Asset.LastUpdated
 - infra: add a `GET /playlist` to list existing playlists
   - cli: add a `task list-playlists`
 - infra: add a `DELETE /playlist/{playlistId}`
@@ -22,6 +20,7 @@
 - infra: add a `PATCH /surface/{surfaceId}` to set PlaylistId
   - cli: add a task set-surface-playlist SURFACE_ID=... PLAYLIST_ID=...
 - infra: add PlaylistId to `GET /surface/{surfaceId}/hello`
+- Projector: fix login
 - Projector: update hello process to fetch playlistId and fetch the playlist
   - UI should show a "No playlists" if PlaylistId is null/undefined
   - UI should show a "Loading playlist..." while loading the playlist ()
@@ -49,6 +48,7 @@
   - delete from dynamodb
   - remove from any playlists
   - notify surfaces that their playlist changed
+- infra: make `PATCH /asset/{assetId}` with an invalid assetId error better than "something went wrong"
 
 ## Later
 
@@ -58,3 +58,5 @@
 - figure out RBAC or something to prevent random people signing up for this
 - a webapp instead of the CLI
 - infra: `GET /asset` should use scope `asset` (it's read only after all)
+- infra: `POST /playlist` should probably have a `playlist:write` scope?
+- cloudwatch log retention
