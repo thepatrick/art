@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source config.sh
-
 mkdir -p .auth
 
 curl --request POST \

@@ -1,0 +1,27 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+
+  auth-refresh:
+    cmds:
+      - doppler run ./refresh.sh
+
+  upload-asset:
+    cmds:
+      - ./upload-asset.sh "{{.FILENAME}}"
+
+  list-assets:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - doppler run ./curl.sh {{.ART_CLI_BASE}}/asset
