@@ -33,3 +33,10 @@ tasks:
         sh: doppler secrets get ART_CLI_BASE --plain
     cmds:
       - 'doppler run -- ./curl.sh -X PATCH -H "content-type: application/json" -d{{.BODY | shellQuote}} {{.ART_CLI_BASE}}/asset/{{.ASSET_ID}}'
+
+  get-asset:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - doppler run ./curl.sh {{.ART_CLI_BASE}}/asset/{{.ASSET_ID}}

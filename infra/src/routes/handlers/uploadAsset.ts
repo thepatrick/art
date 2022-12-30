@@ -4,7 +4,7 @@ import { DynamoDB, S3 } from "aws-sdk";
 import { nanoid } from "nanoid";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
 import { Asset, assetsTable, AssetStatus } from "../../tables/assetsTable";
-import { all, asset } from "@pulumi/pulumi";
+import { all } from "@pulumi/pulumi";
 import { assetsBucket } from "../../buckets/assets";
 import { basename, extname } from "path";
 

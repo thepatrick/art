@@ -2,16 +2,12 @@ import { lambdaRole } from "../../../roles/lambdaRole";
 import { mkLambda } from "../../../helpers/mkLambda";
 import { DynamoDB } from "aws-sdk";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
-import { Asset, assetsTable, AssetStatus } from "../../../tables/assetsTable";
-import { all, asset } from "@pulumi/pulumi";
+import { assetsTable } from "../../../tables/assetsTable";
+import { all } from "@pulumi/pulumi";
 import {
   ExpressionAttributeNameMap,
   ExpressionAttributeValueMap
 } from "aws-sdk/clients/dynamodb";
-
-// TODO:
-// 1. also set ContentType: .whatever
-// 2. (stretch) analyse
 
 interface PatchAssetInfoBody {
   Name?: string;
@@ -152,12 +148,6 @@ export const patchAsset = all([assetsTable.name]).apply(([tableName]) =>
           body: JSON.stringify({ error: "Something went wrong :(" })
         };
       }
-
-      return {
-        statusCode: 500,
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ error: "Um?" })
-      };
     },
     lambdaRole
   )
