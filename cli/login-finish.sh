@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source config.sh
-
 mkdir -p .auth
 
 DEVICE_CODE=$(jq -r .device_code < .auth/device-code.json)

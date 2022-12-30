@@ -9,7 +9,7 @@ start_upload() {
     -H "Authorization: Bearer ${BEARER_TOKEN}" \
     -H "content-type: application/json" \
     -d "{\"filename\":\"$1\"}" \
-    https://fc103km01j.execute-api.ap-southeast-2.amazonaws.com/v1/asset --silent | jq
+    $ART_CLI_BASE/v1/asset --silent | jq
 }
 
 echo Will upload $1 as $FILE_NAME

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source config.sh
-
 mkdir -p .auth
 
 REFRESH_TOKEN=$(jq -r .refresh_token < .auth/refresh-token.json)
