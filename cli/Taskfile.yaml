@@ -25,3 +25,11 @@ tasks:
         sh: doppler secrets get ART_CLI_BASE --plain
     cmds:
       - doppler run ./curl.sh {{.ART_CLI_BASE}}/asset
+
+  # task patch-asset ASSET_ID=MWx_4VJJEvr0OUoL6vCXV BODY='{"Name":"The Red Caboose Motel","Artist":"Cate Hughes","Source":"https://www.etsy.com/au/shop/LuckyHues","Notes":"Downie Live - Travels by Train"}'
+  patch-asset:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - 'doppler run -- ./curl.sh -X PATCH -H "content-type: application/json" -d{{.BODY | shellQuote}} {{.ART_CLI_BASE}}/asset/{{.ASSET_ID}}'

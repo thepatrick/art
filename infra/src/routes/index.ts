@@ -5,6 +5,7 @@ import { testAuth } from "./handlers/testAuth";
 import { helloSurface } from "./handlers/helloSurface";
 import { uploadAsset } from "./handlers/uploadAsset";
 import { listAssets } from "./handlers/assets/listAssets";
+import { patchAsset } from "./handlers/assets/patchAsset";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -48,5 +49,12 @@ export const routes: LambdaRouteInfo[] = [
     lambda: listAssets,
     scopes: ["asset:write"],
     description: "List my assets"
+  },
+  {
+    method: "PATCH",
+    path: "/asset/{assetId}",
+    lambda: patchAsset,
+    scopes: ["asset:write"],
+    description: "Update asset metadata"
   }
 ];
