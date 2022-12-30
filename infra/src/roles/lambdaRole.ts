@@ -43,7 +43,7 @@ new iam.RolePolicy("art-lambda/s3", {
     Statement: [
       {
         Effect: "Allow",
-        Action: "s3:Put*",
+        Action: ["s3:Put*", "s3:Get*"],
         Resource: interpolate`${assetsBucket.arn}/*`
       }
     ]

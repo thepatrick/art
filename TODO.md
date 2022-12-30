@@ -2,7 +2,6 @@
 
 ## Make it usable
 
-- infra: add `GET /asset/{assetId}` including a signed URL to download the asset
 - infra: make `PATCH /asset/{assetId}` with an invalid assetId error better than "something went wrong"
 - infra: add a Playlist model - Owner, PlaylistId, Name, Scenes: List(Assets: List(AssetId), Duration)
 - infra: add a `PUT /playlist` to create a playlist
