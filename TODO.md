@@ -2,6 +2,17 @@
 
 ## Make it usable
 
+- [x] infra: add `GET /asset` to list current assets
+  - [x] cli: add `task list-assets`
+- [x] infra: add `PATCH /asset/${assetId}` to allow setting metadata - primarily add a friendly name, artist, source, notes
+  - [x] cli: add this to the existing upload-asset.sh process
+  - [x] cli: add `task update-asset-metadata NAME=... ARTIST=... SOURCE=... NOTES=...`
+- [x] infra: add `GET /asset/{assetId}` including a signed URL to download the asset
+- [x] infra: add a Playlist model - Owner, PlaylistId, Name, Scenes: List(Assets: List(AssetId), Duration)
+- [x] infra: add a `PUT /playlist` to create a playlist
+  - [x] cli: add a `task create-playlist NAME="some name"`
+- [x] infra: processAsset should update Asset.LastUpdated
+- [x] infra: patchAsset should update Asset.LastUpdated
 - [x] infra: add a `GET /playlist` to list existing playlists
   - [x] cli: add a `task list-playlists`
 - [x] infra: add a `GET /playlist/{playlistId}` (this should support caching using an etag based on LastUpdated)
