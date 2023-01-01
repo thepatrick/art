@@ -4,6 +4,10 @@ import { DynamoDB } from "aws-sdk";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
 import { playlistsTable, Playlist } from "../../../tables/playlistsTable";
 
+interface Headers {
+  [header: string]: boolean | number | string;
+}
+
 export const getPlaylist = playlistsTable.name.apply((tableName) =>
   mkLambda(
     "getPlaylist",
@@ -27,6 +31,10 @@ export const getPlaylist = playlistsTable.name.apply((tableName) =>
           body: JSON.stringify({ error: "Asset not found" })
         };
       }
+
+      const ifMatch = ev.headers["if-match"]
+        ?.split(",")
+        .map((ifM) => ifM.trim().slice(1, -1));
 
       const dynamo = captureAWSClient(new DynamoDB());
 
@@ -56,9 +64,18 @@ export const getPlaylist = playlistsTable.name.apply((tableName) =>
 
         const playlist = DynamoDB.Converter.unmarshall(playlistRaw) as Playlist;
 
+        const etag = `${playlistId}-${playlist.LastUpdated}`;
+
+        if (ifMatch?.includes(etag)) {
+          return { statusCode: 304 };
+        }
+
         return {
           statusCode: 200,
-          headers: { "content-type": "application/json" },
+          headers: {
+            "content-type": "application/json",
+            etag: `"${etag}"`
+          } as Headers, // otherwise typescript complains about etag?: undefined which... no?
           body: JSON.stringify({ playlist })
         };
       } catch (error) {

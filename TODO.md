@@ -15,8 +15,9 @@
 - [x] infra: patchAsset should update Asset.LastUpdated
 - [x] infra: add a `GET /playlist` to list existing playlists
   - [x] cli: add a `task list-playlists`
-- [x] infra: add a `GET /playlist/{playlistId}` (this should support caching using an etag based on LastUpdated)
+- [x] infra: add a `GET /playlist/{playlistId}`
   - [x] cli: add a `task get-playlist PLAYLIST_ID=...`
+  - [x] infra: (this should support caching using an etag based on LastUpdated)
 - [ ] infra: add a `DELETE /playlist/{playlistId}`
   - [ ] cli: add a `task delete-playlist PLAYLIST_ID=...`
 - [ ] infra: add a `PATCH /playlist/{playlistId}` to modify playlists (_must_ modify LastUpdated)
