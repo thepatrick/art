@@ -2,12 +2,12 @@
 
 ## Make it usable
 
-- [ ] infra: add a `GET /playlist` to list existing playlists
-  - cli: add a `task list-playlists`
-- [ ] infra: add a `DELETE /playlist/{playlistId}`
-  - cli: add a `task delete-playlist PLAYLIST_ID=...`
+- [x] infra: add a `GET /playlist` to list existing playlists
+  - [x] cli: add a `task list-playlists`
 - [ ] infra: add a `GET /playlist/{playlistId}` (this should support caching using an etag based on LastUpdated)
   - cli: add a `task get-playlist PLAYLIST_ID=...`
+- [ ] infra: add a `DELETE /playlist/{playlistId}`
+  - cli: add a `task delete-playlist PLAYLIST_ID=...`
 - [ ] infra: add a `PATCH /playlist/{playlistId}` to modify playlists (_must_ modify LastUpdated)
   - cli: add a `task add-to-playlist PLAYLIST_ID=... ASSETS=ASSET_ID,... DURATION=...`
   - cli: add a `task remove-from-playlist PLAYLIST_ID=... SCENE=`

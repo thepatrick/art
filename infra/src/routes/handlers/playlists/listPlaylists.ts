@@ -1,36 +1,28 @@
 import { lambdaRole } from "../../../roles/lambdaRole";
 import { mkLambda } from "../../../helpers/mkLambda";
-import { DynamoDB, S3 } from "aws-sdk";
-import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
-import { assetsTable } from "../../../tables/assetsTable";
-import { all } from "@pulumi/pulumi";
-import { assetsBucket } from "../../../buckets/assets";
+import { DynamoDB } from "aws-sdk";
+import {
+  captureAWSClient,
+  getSegment,
+  Segment,
+  captureAsyncFunc
+} from "aws-xray-sdk-core";
+import { playlistsTable, Playlist } from "../../../tables/playlistsTable";
 
-interface AssetInfoBody {
-  filename?: string;
-}
-
-export const listAssets = all([
-  assetsTable.name,
-  assetsBucket.bucket,
-  assetsBucket.region
-]).apply(([tableName, bucketName, bucketRegion]) =>
+export const listPlaylists = playlistsTable.name.apply((tableName) =>
   mkLambda(
-    "listAssets",
+    "listPlaylists",
     async (ev, ctx) => {
       const owner = ev.requestContext.authorizer.jwt.claims.sub;
-
       if (typeof owner !== "string") {
         return {
           statusCode: 403,
-          headers: {
-            "content-type": "application/json"
-          },
+          headers: { "content-type": "application/json" },
           body: JSON.stringify({ error: "Nope" })
         };
       }
 
-      (getSegment() as Segment).setUser(`${owner}`);
+      (getSegment() as Segment).setUser(owner);
 
       const dynamo = captureAWSClient(new DynamoDB());
 
@@ -40,11 +32,14 @@ export const listAssets = all([
             TableName: tableName,
             KeyConditionExpression: "#owner_id = :owner",
             ExpressionAttributeNames: {
-              "#owner_id": "Owner"
+              "#owner_id": "Owner",
+              "#name": "Name,"
             },
             ExpressionAttributeValues: {
               ":owner": { S: owner }
-            }
+            },
+            ProjectionExpression:
+              "#owner_id, PlaylistId, Created, LastUpdated, #name"
           })
           .promise();
 
@@ -54,22 +49,16 @@ export const listAssets = all([
 
         return {
           statusCode: 200,
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({ items: returnable })
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ playlists: returnable })
         };
       } catch (error) {
         console.log("Error", error);
         return {
           statusCode: 200,
-          headers: {
-            "content-type": "application/json"
-          },
+          headers: { "content-type": "application/json" },
           body: JSON.stringify({
-            error: "Nope",
-            // TODO: Remove this (leaking error message)
-            message: (error as Error).message
+            error: "Internal server error"
           })
         };
       }
