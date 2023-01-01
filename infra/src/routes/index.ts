@@ -8,6 +8,7 @@ import { listAssets } from "./handlers/assets/listAssets";
 import { patchAsset } from "./handlers/assets/patchAsset";
 import { getAsset } from "./handlers/assets/getAsset";
 import { createPlaylist } from "./handlers/playlists/createPlaylist";
+import { listPlaylists } from "./handlers/playlists/listPlaylists";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -72,5 +73,12 @@ export const routes: LambdaRouteInfo[] = [
     lambda: createPlaylist,
     scopes: ["asset:write"],
     description: "Create a playlist"
+  },
+  {
+    method: "GET",
+    path: "/playlist",
+    lambda: listPlaylists,
+    scopes: ["asset:write"],
+    description: "List playlists"
   }
 ];
