@@ -54,3 +54,17 @@ tasks:
         sh: doppler secrets get ART_CLI_BASE --plain
     cmds:
       - 'doppler run -- ./curl.sh -X GET -H "content-type: application/json" {{.ART_CLI_BASE}}/playlist'
+
+  get-playlist:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - doppler run -- ./curl.sh -v {{.ART_CLI_BASE}}/playlist/{{.PLAYLIST_ID | shellQuote}}
+
+  get-playlist-version:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - 'doppler run -- ./curl.sh -H ''If-Match: "{{.ETAG | shellQuote}}"'' -v {{.ART_CLI_BASE}}/playlist/{{.PLAYLIST_ID | shellQuote}}'
