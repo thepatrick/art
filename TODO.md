@@ -21,8 +21,8 @@
 - [ ] infra: add a `DELETE /playlist/{playlistId}`
   - [ ] cli: add a `task delete-playlist PLAYLIST_ID=...`
 - [ ] infra: add a `PATCH /playlist/{playlistId}` to modify playlists (_must_ modify LastUpdated)
-  - [ ] cli: add a `task add-to-playlist PLAYLIST_ID=... ASSETS=ASSET_ID,... DURATION=...`
-  - [ ] cli: add a `task remove-from-playlist PLAYLIST_ID=... SCENE=`
+  - [ ] infra: validate the assets exist (for the current user)
+  - [x] cli: provide examples for adding and removing scenes
 - [ ] infra: add a `PATCH /surface/{surfaceId}` to set Rotation (default = 0, 90, 180, 270)
   - [ ] cli: add a task set-surface-rotation SURFACE_ID=... ROTATION=...
   - [ ] infra: update `GET /surface/{surfaceId}/hello` to include Rotation
@@ -59,6 +59,8 @@
   - [ ] remove from any playlists
   - [ ] notify surfaces that their playlist changed
 - [ ] infra: make `PATCH /asset/{assetId}` with an invalid assetId error better than "something went wrong"
+- [ ] cli: add a `task add-to-playlist PLAYLIST_ID=... ASSETS=ASSET_ID,... DURATION=...`
+- [ ] cli: add a `task remove-from-playlist PLAYLIST_ID=... SCENE=`
 
 ## Later
 
