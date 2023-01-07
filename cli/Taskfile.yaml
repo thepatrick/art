@@ -68,3 +68,15 @@ tasks:
         sh: doppler secrets get ART_CLI_BASE --plain
     cmds:
       - 'doppler run -- ./curl.sh -H ''If-Match: "{{.ETAG | shellQuote}}"'' -v {{.ART_CLI_BASE}}/playlist/{{.PLAYLIST_ID | shellQuote}}'
+
+  # task patch-playlist PLAYLIST_ID=... ETAG=... BODY='{"Name":"Test 2"}'
+  # task patch-playlist PLAYLIST_ID=... ETAG=... BODY='{"SceneChanges":[{"Change":"Add","Duration":3600,"Assets":[{"AssetId":"add-to-start"}],"Before":0}]}'
+  # task patch-playlist PLAYLIST_ID=... ETAG=... BODY='{"SceneChanges":[{"Change":"Add","Duration":3600,"Assets":[{"AssetId":"add-to-the-middle"}],"Before":5}]}'
+  # task patch-playlist PLAYLIST_ID=... ETAG=... BODY='{"SceneChanges":[{"Change":"Add","Duration":3600,"Assets":[{"AssetId":"add-to-end"}]}]}'
+  # task patch-playlist PLAYLIST_ID=... ETAG=... BODY='{"SceneChanges":[{"Change":"Remove","Scene":0}]}'
+  patch-playlist:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - 'doppler run -- ./curl.sh -H ''If-Match: "{{.ETAG | shellQuote}}"'' -H "content-type: application/json" -X PATCH -d{{.BODY | shellQuote}} -v {{.ART_CLI_BASE}}/playlist/{{.PLAYLIST_ID | shellQuote}}'

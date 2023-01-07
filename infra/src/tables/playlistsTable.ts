@@ -21,7 +21,7 @@ interface PlaylistSceneAsset {
   AssetId: string;
 }
 
-interface PlaylistScene {
+export interface PlaylistScene {
   Assets: PlaylistSceneAsset[];
   Duration: number;
 }
