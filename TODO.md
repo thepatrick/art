@@ -20,8 +20,8 @@
   - [x] infra: (this should support caching using an etag based on LastUpdated)
 - [ ] infra: add a `DELETE /playlist/{playlistId}`
   - [ ] cli: add a `task delete-playlist PLAYLIST_ID=...`
-- [ ] infra: add a `PATCH /playlist/{playlistId}` to modify playlists (_must_ modify LastUpdated)
-  - [ ] infra: validate the assets exist (for the current user)
+- [x] infra: add a `PATCH /playlist/{playlistId}` to modify playlists (_must_ modify LastUpdated)
+  - [x] infra: validate the assets exist (for the current user)
   - [x] cli: provide examples for adding and removing scenes
 - [ ] infra: add a `PATCH /surface/{surfaceId}` to set Rotation (default = 0, 90, 180, 270)
   - [ ] cli: add a task set-surface-rotation SURFACE_ID=... ROTATION=...

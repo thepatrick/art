@@ -25,6 +25,7 @@ new iam.RolePolicy("art-lambda/dynaodb", {
       {
         Effect: "Allow",
         Action: [
+          "dynamodb:BatchGetItem",
           "dynamodb:Get*",
           "dynamodb:Put*",
           "dynamodb:Update*",
