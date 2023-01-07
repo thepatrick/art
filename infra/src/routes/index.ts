@@ -11,6 +11,7 @@ import { createPlaylist } from "./handlers/playlists/createPlaylist";
 import { listPlaylists } from "./handlers/playlists/listPlaylists";
 import { getPlaylist } from "./handlers/playlists/getPlaylist";
 import { patchPlaylist } from "./handlers/playlists/patchPlaylist";
+import { patchSurface } from "./handlers/surfaces/patchSurface";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -33,6 +34,13 @@ export const routes: LambdaRouteInfo[] = [
     lambda: listSurfaces,
     scopes: ["surface"],
     description: "List user's surfaces"
+  },
+  {
+    method: "PATCH",
+    path: "/surface/{surfaceId}",
+    lambda: patchSurface,
+    scopes: ["surface"],
+    description: "Update existing surfaces"
   },
   {
     method: "GET",

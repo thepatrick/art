@@ -19,4 +19,6 @@ export interface Surface {
   SurfaceId: string;
   Created: number;
   LastUpdated: number;
+  Name?: string;
+  Rotation?: number;
 }

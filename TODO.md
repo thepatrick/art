@@ -23,7 +23,7 @@
 - [x] infra: add a `PATCH /playlist/{playlistId}` to modify playlists (_must_ modify LastUpdated)
   - [x] infra: validate the assets exist (for the current user)
   - [x] cli: provide examples for adding and removing scenes
-- [ ] infra: add a `PATCH /surface/{surfaceId}` to set Rotation (default = 0, 90, 180, 270)
+- [x] infra: add a `PATCH /surface/{surfaceId}` to set Rotation (default = 0, 90, 180, 270)
   - [ ] cli: add a task set-surface-rotation SURFACE_ID=... ROTATION=...
   - [ ] infra: update `GET /surface/{surfaceId}/hello` to include Rotation
   - [ ] Projector: read Rotation from `GET /surface/{surfaceId}/hello` and update UI.
