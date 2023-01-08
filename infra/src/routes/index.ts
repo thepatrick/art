@@ -95,7 +95,7 @@ export const routes: LambdaRouteInfo[] = [
     method: "GET",
     path: "/playlist/{playlistId}",
     lambda: getPlaylist,
-    scopes: ["asset:write"],
+    scopes: ["asset:write", "surface"],
     description: "Get single playlist"
   },
   {

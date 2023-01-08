@@ -27,12 +27,13 @@
   - [x] cli: add a task set-surface-rotation SURFACE_ID=... ROTATION=...
   - [x] infra: validate PlaylistId exists
   - [x] infra: update `GET /surface/{surfaceId}/hello` to include Rotation, PlaylistId
-  - [ ] Projector: read Rotation from `GET /surface/{surfaceId}/hello` and update UI.
+  - [x] Projector: read Rotation from `GET /surface/{surfaceId}/hello` and update UI.
 - [x] infra: `GET /surface/{surfaceId}/hello` should have a `surface` key, only include Rotation, PlaylistId, Name
-- [ ] Projector: fix login
-- [ ] Projector: update hello process to fetch playlistId and fetch the playlist
+- [x] Projector: fix login
+- [x] Projector: update hello process to fetch playlistId and fetch the playlist
   - [ ] UI should show a "No playlists" if PlaylistId is null/undefined
-  - [ ] UI should show a "Loading playlist..." while loading the playlist ()
+  - [x] UI should show a "Loading playlist..." while loading the playlist ()
+  - [ ] UI should show a "No items" if playlist has nothing in it
 - [ ] Projector: download assets for current playlist
 - [ ] Projector: show assets from playlist (v0 only show first asset in each scene)
   - [ ] show first scene
@@ -64,6 +65,7 @@
 
 ## Later
 
+- [ ] Projector: First auth seems to not persist surface ID after registering
 - [ ] Projector: show multiple assets per scene
 - [ ] Projector: handle files on disk appropriately - understand tvOS limits
   - [ ] remove any cached assets if not present in any scene in the current playlist
