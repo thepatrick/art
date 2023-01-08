@@ -23,15 +23,12 @@
 - [x] infra: add a `PATCH /playlist/{playlistId}` to modify playlists (_must_ modify LastUpdated)
   - [x] infra: validate the assets exist (for the current user)
   - [x] cli: provide examples for adding and removing scenes
-- [x] infra: add a `PATCH /surface/{surfaceId}` to set Rotation (default = 0, 90, 180, 270), Name, Playlist
+- [x] infra: add a `PATCH /surface/{surfaceId}` to set Rotation (default = 0, 90, 180, 270), Name, PlaylistId
   - [x] cli: add a task set-surface-rotation SURFACE_ID=... ROTATION=...
   - [x] infra: validate PlaylistId exists
-  - [ ] infra: update `GET /surface/{surfaceId}/hello` to include Rotation, PlaylistId
+  - [x] infra: update `GET /surface/{surfaceId}/hello` to include Rotation, PlaylistId
   - [ ] Projector: read Rotation from `GET /surface/{surfaceId}/hello` and update UI.
 - [x] infra: `GET /surface/{surfaceId}/hello` should have a `surface` key, only include Rotation, PlaylistId, Name
-- [ ] infra: add a `PATCH /surface/{surfaceId}` to set PlaylistId
-  - [ ] cli: add a task set-surface-playlist SURFACE_ID=... PLAYLIST_ID=...
-- [ ] infra: add PlaylistId to `GET /surface/{surfaceId}/hello`
 - [ ] Projector: fix login
 - [ ] Projector: update hello process to fetch playlistId and fetch the playlist
   - [ ] UI should show a "No playlists" if PlaylistId is null/undefined
