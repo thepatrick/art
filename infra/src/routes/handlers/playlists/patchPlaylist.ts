@@ -17,10 +17,6 @@ import { APIGatewayProxyStructuredResultV2 } from "aws-lambda";
 import { all } from "@pulumi/pulumi";
 import { assetsTable } from "../../../tables/assetsTable";
 
-interface Headers {
-  [header: string]: boolean | number | string;
-}
-
 interface PatchAssetInfoBodySceneChangeAdd {
   Change: "Add";
   Assets: { AssetId: string }[];

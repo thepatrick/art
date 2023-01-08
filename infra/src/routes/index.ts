@@ -2,7 +2,7 @@ import { LambdaRouteInfo } from "../helpers/LambdaRoute";
 import { registerSurface } from "./handlers/registerSurface";
 import { listSurfaces } from "./handlers/listSurfaces";
 import { testAuth } from "./handlers/testAuth";
-import { helloSurface } from "./handlers/helloSurface";
+import { helloSurface } from "./handlers/surfaces/helloSurface";
 import { uploadAsset } from "./handlers/uploadAsset";
 import { listAssets } from "./handlers/assets/listAssets";
 import { patchAsset } from "./handlers/assets/patchAsset";

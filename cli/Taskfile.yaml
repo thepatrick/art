@@ -30,6 +30,13 @@ tasks:
     cmds:
       - 'doppler run -- ./curl.sh -X PATCH -H "content-type: application/json" -d{{.BODY | shellQuote}} {{.ART_CLI_BASE}}/surface/{{.SURFACE_ID}}'
 
+  hello-surface:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - "doppler run -- ./curl.sh {{.ART_CLI_BASE}}/surface/{{.SURFACE_ID}}/hello"
+
   upload-asset:
     cmds:
       - ./upload-asset.sh "{{.FILENAME}}"

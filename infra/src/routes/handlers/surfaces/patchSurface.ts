@@ -9,14 +9,20 @@ import {
   ExpressionAttributeValueMap
 } from "aws-sdk/clients/dynamodb";
 import { Surface, surfaceTable } from "../../../tables/surfaceTable";
-import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
+import {
+  ConditionalCheckFailedException,
+  ReturnValue
+} from "@aws-sdk/client-dynamodb";
+import { playlistsTable } from "../../../tables/playlistsTable";
 
 interface PatchSurfaceBody {
   Name?: string;
   Rotation?: number;
+  PlaylistId?: string | null;
 }
-export const patchSurface = all([surfaceTable.name]).apply(
-  ([surfaceTableName]) =>
+
+export const patchSurface = all([surfaceTable.name, playlistsTable.name]).apply(
+  ([surfaceTableName, playlistTableName]) =>
     mkLambda(
       "patchSurface",
       async (ev, ctx) => {
@@ -54,20 +60,58 @@ export const patchSurface = all([surfaceTable.name]).apply(
           let updateExpressionParts: string[] = [
             "#LastUpdated = :NewLastUpdated"
           ];
+          let removeExpressionParts: string[] = [];
           let expressionAttributeNames: ExpressionAttributeNameMap = {};
           let expressionAttributeValues: { [key: string]: unknown } = {};
 
-          for (const key of ["Name", "Rotation"]) {
-            if (Object.prototype.hasOwnProperty.call(surfaceInfo, key)) {
-              updateExpressionParts.push(`#${key} = :${key}`);
-              expressionAttributeNames[`#${key}`] = key;
-              expressionAttributeValues[`:${key}`] =
-                surfaceInfo[key as keyof PatchSurfaceBody];
+          const playlistId = surfaceInfo.PlaylistId;
+          if (playlistId != null) {
+            // verify this playlist exists
+            const playlistGet = await dynamo
+              .getItem({
+                TableName: playlistTableName,
+                Key: DynamoDB.Converter.marshall({
+                  Owner: owner,
+                  PlaylistId: playlistId
+                }),
+                ProjectionExpression: "PlaylistId"
+              })
+              .promise();
+
+            const item = playlistGet.Item;
+
+            if (item == undefined) {
+              return r(
+                422,
+                {},
+                {
+                  error:
+                    "Playlist ID must exist (use null to clear current PlaylistId)"
+                }
+              );
             }
           }
 
+          for (const key of ["Name", "Rotation", "PlaylistId"]) {
+            if (Object.prototype.hasOwnProperty.call(surfaceInfo, key)) {
+              const value = surfaceInfo[key as keyof PatchSurfaceBody];
+              expressionAttributeNames[`#${key}`] = key;
+              if (value !== null) {
+                updateExpressionParts.push(`#${key} = :${key}`);
+                expressionAttributeValues[`:${key}`] = value;
+              } else {
+                removeExpressionParts.push(`#${key}`);
+              }
+            }
+          }
+          let setStatement = `SET ${updateExpressionParts.join(", ")}`;
+          let removeStatement =
+            removeExpressionParts.length > 0
+              ? ` REMOVE ${removeExpressionParts.join(", ")}`
+              : "";
+
           try {
-            await dynamo
+            const updatedSurfaceRequest = await dynamo
               .updateItem({
                 TableName: surfaceTableName,
                 Key: DynamoDB.Converter.marshall({
@@ -76,7 +120,7 @@ export const patchSurface = all([surfaceTable.name]).apply(
                 }),
                 ConditionExpression:
                   "#Owner = :Owner AND SurfaceId = :SurfaceId",
-                UpdateExpression: `SET ${updateExpressionParts.join(", ")}`,
+                UpdateExpression: `${setStatement}${removeStatement}`,
                 ExpressionAttributeNames: {
                   ...expressionAttributeNames,
                   "#Owner": "Owner",
@@ -87,9 +131,25 @@ export const patchSurface = all([surfaceTable.name]).apply(
                   ":Owner": owner,
                   ":SurfaceId": surfaceId,
                   ":NewLastUpdated": Date.now()
-                })
+                }),
+                ReturnValues: "ALL_NEW"
               })
               .promise();
+
+            const updatedSurfaceRaw = updatedSurfaceRequest.Attributes;
+            if (updatedSurfaceRaw == null) {
+              console.log(
+                "Failed to get surface after updating, this is... weird",
+                updatedSurfaceRequest.$response.error
+              );
+              return r(404, {}, { error: "Surface not found" });
+            }
+
+            const updatedSurface = DynamoDB.Converter.unmarshall(
+              updatedSurfaceRaw
+            ) as Surface;
+
+            return r(200, {}, { surface: updatedSurface });
           } catch (err) {
             if (err instanceof ConditionalCheckFailedException) {
               return r(404, {}, { error: "Surface not found" });
@@ -97,30 +157,6 @@ export const patchSurface = all([surfaceTable.name]).apply(
               throw err;
             }
           }
-
-          const updatedSurfaceGet = await dynamo
-            .getItem({
-              TableName: surfaceTableName,
-              Key: DynamoDB.Converter.marshall({
-                Owner: owner,
-                SurfaceId: surfaceId
-              })
-            })
-            .promise();
-          const updatedSurfaceRaw = updatedSurfaceGet.Item;
-          if (updatedSurfaceRaw == null) {
-            console.log(
-              "Failed to get playlist after updating, this is... weird",
-              updatedSurfaceGet.$response.error
-            );
-            return r(404, {}, { error: "Surface not found" });
-          }
-
-          const updatedSurface = DynamoDB.Converter.unmarshall(
-            updatedSurfaceRaw
-          ) as Surface;
-
-          return r(200, {}, { surface: updatedSurface });
         } catch (err) {
           return internalServerError("patchSurface", err);
         }

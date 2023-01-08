@@ -21,4 +21,5 @@ export interface Surface {
   LastUpdated: number;
   Name?: string;
   Rotation?: number;
+  PlaylistId?: string;
 }
