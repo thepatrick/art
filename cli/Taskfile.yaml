@@ -22,6 +22,7 @@ tasks:
     cmds:
       - doppler run ./curl.sh {{.ART_CLI_BASE}}/surface
 
+  # task patch-surface SURFACE_ID=... BODY='{"Name":"Test 1","Rotation":270}'
   patch-surface:
     vars:
       ART_CLI_BASE:

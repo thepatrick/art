@@ -24,7 +24,7 @@
   - [x] infra: validate the assets exist (for the current user)
   - [x] cli: provide examples for adding and removing scenes
 - [x] infra: add a `PATCH /surface/{surfaceId}` to set Rotation (default = 0, 90, 180, 270)
-  - [ ] cli: add a task set-surface-rotation SURFACE_ID=... ROTATION=...
+  - [x] cli: add a task set-surface-rotation SURFACE_ID=... ROTATION=...
   - [ ] infra: update `GET /surface/{surfaceId}/hello` to include Rotation
   - [ ] Projector: read Rotation from `GET /surface/{surfaceId}/hello` and update UI.
 - [ ] infra: add a `PATCH /surface/{surfaceId}` to set PlaylistId
@@ -61,6 +61,7 @@
 - [ ] infra: make `PATCH /asset/{assetId}` with an invalid assetId error better than "something went wrong"
 - [ ] cli: add a `task add-to-playlist PLAYLIST_ID=... ASSETS=ASSET_ID,... DURATION=...`
 - [ ] cli: add a `task remove-from-playlist PLAYLIST_ID=... SCENE=`
+- [ ] infra: make `PATCH /surface/{surfaceId}` validate the rotation?
 
 ## Later
 
