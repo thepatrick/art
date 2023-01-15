@@ -74,7 +74,7 @@ export const routes: LambdaRouteInfo[] = [
     method: "GET",
     path: "/asset/{assetId}",
     lambda: getAsset,
-    scopes: ["asset:write"],
+    scopes: ["asset:write", "surface"],
     description: "Update asset metadata"
   },
   {

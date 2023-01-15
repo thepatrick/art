@@ -74,3 +74,5 @@
 - [ ] infra: `GET /asset` should use scope `asset` (it's read only after all)
 - [ ] infra: `POST /playlist` should probably have a `playlist:write` scope?
 - [ ] cloudwatch log retention
+- [ ] Projector: handle forbidden errors
+- [ ] Projector: Show asset downloading progress
