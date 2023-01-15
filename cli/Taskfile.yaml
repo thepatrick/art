@@ -39,7 +39,7 @@ tasks:
 
   upload-asset:
     cmds:
-      - ./upload-asset.sh "{{.FILENAME}}"
+      - doppler run -- ./upload-asset.sh "{{.FILENAME}}"
 
   list-assets:
     vars:

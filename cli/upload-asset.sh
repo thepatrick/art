@@ -9,12 +9,14 @@ start_upload() {
     -H "Authorization: Bearer ${BEARER_TOKEN}" \
     -H "content-type: application/json" \
     -d "{\"filename\":\"$1\"}" \
-    $ART_CLI_BASE/v1/asset --silent | jq
+    $ART_CLI_BASE/asset --silent | jq
 }
 
-echo Will upload $1 as $FILE_NAME
+echo Will upload $1 as $FILE_NAME to $ART_CLI_BASE/asset
 
 UPLOAD_INFO=$(start_upload $FILE_NAME)
+
+echo $UPLOAD_INFO
 
 # TODO: Check for error
 

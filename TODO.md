@@ -34,19 +34,19 @@
   - [ ] UI should show a "No playlists" if PlaylistId is null/undefined
   - [x] UI should show a "Loading playlist..." while loading the playlist ()
   - [ ] UI should show a "No items" if playlist has nothing in it
-- [ ] Projector: download assets for current playlist
+- [x] Projector: download assets for current playlist
 - [ ] Projector: show assets from playlist (v0 only show first asset in each scene)
-  - [ ] show first scene
+  - [x] show first scene
   - [ ] advance after duration
   - [ ] when reach end of playlist go to scene 0
+
+## Make it usable without restarting the app
+
 - [ ] Projector: add a timer to query `/surface/{surfaceId}/hello` for PlaylistId changes
   - [ ] while not backgrounded
   - [ ] if PlayListId is different, start from scene 0
   - [ ] if not different do a `GET /playlist/{playlistId}` with an etag or something with LastUpdated
   - [ ] if LastUpdated has changed treat as if a new playlist (restart from scene 0)
-
-## Make it usable without restarting the app
-
 - [ ] infra: add info to /surface/{surfaceId}/hello to allow connecting to ably
 - [ ] Porjector: connect to ably
 - [ ] infra: when a playlist is modified, look up surfaces that use that playlist and notify the ably channel for that surface
