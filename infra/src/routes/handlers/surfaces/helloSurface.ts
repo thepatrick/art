@@ -1,7 +1,7 @@
-import { lambdaRole } from "../../roles/lambdaRole";
-import { mkLambda } from "../../helpers/mkLambda";
+import { lambdaRole } from "../../../roles/lambdaRole";
+import { mkLambda } from "../../../helpers/mkLambda";
 import { DynamoDB } from "aws-sdk";
-import { surfaceTable } from "../../tables/surfaceTable";
+import { Surface, surfaceTable } from "../../../tables/surfaceTable";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
 
 export const helloSurface = surfaceTable.name.apply((tableName) =>
@@ -42,10 +42,11 @@ export const helloSurface = surfaceTable.name.apply((tableName) =>
             Key: DynamoDB.Converter.marshall({
               Owner: owner,
               SurfaceId: surfaceId
-            })
-            // ExpressionAttributeNames: {
-            //   "#owner_id": "Owner"
-            // }
+            }),
+            ExpressionAttributeNames: {
+              "#Name": "Name"
+            },
+            ProjectionExpression: "Rotation, #Name, PlaylistId"
           })
           .promise();
 
@@ -64,14 +65,17 @@ export const helloSurface = surfaceTable.name.apply((tableName) =>
           };
         }
 
-        const returnable = DynamoDB.Converter.unmarshall(item);
+        const returnable = DynamoDB.Converter.unmarshall(item) as Pick<
+          Surface,
+          "Rotation" | "Name" | "PlaylistId"
+        >;
 
         return {
           statusCode: 200,
           headers: {
             "content-type": "application/json"
           },
-          body: JSON.stringify({ screen: returnable })
+          body: JSON.stringify({ surface: returnable })
         };
       } catch (error) {
         console.log("Error", error);

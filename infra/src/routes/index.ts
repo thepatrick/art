@@ -2,7 +2,7 @@ import { LambdaRouteInfo } from "../helpers/LambdaRoute";
 import { registerSurface } from "./handlers/registerSurface";
 import { listSurfaces } from "./handlers/listSurfaces";
 import { testAuth } from "./handlers/testAuth";
-import { helloSurface } from "./handlers/helloSurface";
+import { helloSurface } from "./handlers/surfaces/helloSurface";
 import { uploadAsset } from "./handlers/uploadAsset";
 import { listAssets } from "./handlers/assets/listAssets";
 import { patchAsset } from "./handlers/assets/patchAsset";
@@ -11,6 +11,7 @@ import { createPlaylist } from "./handlers/playlists/createPlaylist";
 import { listPlaylists } from "./handlers/playlists/listPlaylists";
 import { getPlaylist } from "./handlers/playlists/getPlaylist";
 import { patchPlaylist } from "./handlers/playlists/patchPlaylist";
+import { patchSurface } from "./handlers/surfaces/patchSurface";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -33,6 +34,13 @@ export const routes: LambdaRouteInfo[] = [
     lambda: listSurfaces,
     scopes: ["surface"],
     description: "List user's surfaces"
+  },
+  {
+    method: "PATCH",
+    path: "/surface/{surfaceId}",
+    lambda: patchSurface,
+    scopes: ["surface"],
+    description: "Update existing surfaces"
   },
   {
     method: "GET",
@@ -66,7 +74,7 @@ export const routes: LambdaRouteInfo[] = [
     method: "GET",
     path: "/asset/{assetId}",
     lambda: getAsset,
-    scopes: ["asset:write"],
+    scopes: ["asset:write", "surface"],
     description: "Update asset metadata"
   },
   {
@@ -87,7 +95,7 @@ export const routes: LambdaRouteInfo[] = [
     method: "GET",
     path: "/playlist/{playlistId}",
     lambda: getPlaylist,
-    scopes: ["asset:write"],
+    scopes: ["asset:write", "surface"],
     description: "Get single playlist"
   },
   {

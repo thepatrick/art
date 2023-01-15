@@ -1,5 +1,5 @@
 import { lambdaRole } from "../../../roles/lambdaRole";
-import { mkLambda } from "../../../helpers/mkLambda";
+import { mkLambda, r } from "../../../helpers/mkLambda";
 import { AWSError, DynamoDB } from "aws-sdk";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
 import {
@@ -16,10 +16,6 @@ import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { APIGatewayProxyStructuredResultV2 } from "aws-lambda";
 import { all } from "@pulumi/pulumi";
 import { assetsTable } from "../../../tables/assetsTable";
-
-interface Headers {
-  [header: string]: boolean | number | string;
-}
 
 interface PatchAssetInfoBodySceneChangeAdd {
   Change: "Add";
@@ -40,12 +36,6 @@ interface PatchPlaylistInfoBody {
   Name?: string;
   SceneChanges?: PatchAssetInfoBodySceneChange[];
 }
-
-const r = (statusCode: number, headers: Headers = {}, body?: unknown) => ({
-  statusCode,
-  headers: { "content-type": "application/json", ...headers },
-  body: body !== null ? JSON.stringify(body) : undefined
-});
 
 export const patchPlaylist = all([playlistsTable.name, assetsTable.name]).apply(
   ([tableName, assetsTableName]) =>

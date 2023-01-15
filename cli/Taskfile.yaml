@@ -15,9 +15,31 @@ tasks:
     cmds:
       - doppler run ./refresh.sh
 
+  list-surfaces:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - doppler run ./curl.sh {{.ART_CLI_BASE}}/surface
+
+  # task patch-surface SURFACE_ID=... BODY='{"Name":"Test 1","Rotation":270}'
+  patch-surface:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - 'doppler run -- ./curl.sh -X PATCH -H "content-type: application/json" -d{{.BODY | shellQuote}} {{.ART_CLI_BASE}}/surface/{{.SURFACE_ID}}'
+
+  hello-surface:
+    vars:
+      ART_CLI_BASE:
+        sh: doppler secrets get ART_CLI_BASE --plain
+    cmds:
+      - "doppler run -- ./curl.sh {{.ART_CLI_BASE}}/surface/{{.SURFACE_ID}}/hello"
+
   upload-asset:
     cmds:
-      - ./upload-asset.sh "{{.FILENAME}}"
+      - doppler run -- ./upload-asset.sh "{{.FILENAME}}"
 
   list-assets:
     vars:
