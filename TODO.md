@@ -35,10 +35,12 @@
   - [x] UI should show a "Loading playlist..." while loading the playlist ()
   - [ ] UI should show a "No items" if playlist has nothing in it
 - [x] Projector: download assets for current playlist
-- [ ] Projector: show assets from playlist (v0 only show first asset in each scene)
+- [x] Projector: show assets from playlist (v0 only show first asset in each scene)
   - [x] show first scene
-  - [ ] advance after duration
-  - [ ] when reach end of playlist go to scene 0
+  - [x] advance after duration
+  - [x] when reach end of playlist go to scene 0
+- [x] Projector: Push to github
+- [x] Projector: Internal TestFlight on merge to main
 
 ## Make it usable without restarting the app
 
