@@ -25,7 +25,7 @@ jobs:
         node-version: '18'
     - run: npm install
       working-directory: ./infra
-    - uses: pulumi/actions@v3
+    - uses: pulumi/actions@v4
       id: pulumi
       with:
         command: preview
