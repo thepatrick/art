@@ -11,14 +11,12 @@ enum Errors: Error {
   case cannotGenerateS3URL
 }
 
-
-
 @main
 struct ArtAPI: SimpleLambdaHandler {
   func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
     switch event.routeKey {
     case "GET /asset/{assetId}":
-      return try await Assets.Get(event, context: context)
+      return try await AssetsHandlers.Get(event, context: context)
     default:
       return try Response.notFound()
     }

@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug swift-api",
+      "program": "${workspaceFolder:swift-api}/.build/debug/swift-api",
+      "args": [],
+      "cwd": "${workspaceFolder:swift-api}",
+      "preLaunchTask": "swift: Build Debug swift-api"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Release swift-api",
+      "program": "${workspaceFolder:swift-api}/.build/release/swift-api",
+      "args": [],
+      "cwd": "${workspaceFolder:swift-api}",
+      "preLaunchTask": "swift: Build Release swift-api"
+    }
+  ]
+}

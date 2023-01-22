@@ -14,7 +14,7 @@ import SotoS3
 
 import Foundation
 
-extension Assets {
+extension AssetsHandlers {
   static func Get(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
       guard let assetTableName = Environment["ART_ASSET_TABLE_NAME"],
             let bucketName = Environment["ART_ASSET_BUCKET_NAME"],
