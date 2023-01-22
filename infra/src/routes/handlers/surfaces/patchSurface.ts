@@ -1,5 +1,9 @@
 import { lambdaRole } from "../../../roles/lambdaRole";
-import { internalServerError, mkLambda, r } from "../../../helpers/mkLambda";
+import {
+  internalServerError,
+  mkLambda,
+  mkResponses
+} from "../../../helpers/mkLambda";
 import { DynamoDB } from "aws-sdk";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
 import { assetsTable } from "../../../tables/assetsTable";
@@ -14,6 +18,7 @@ import {
   ReturnValue
 } from "@aws-sdk/client-dynamodb";
 import { playlistsTable } from "../../../tables/playlistsTable";
+import { corsConfiguration } from "../../../api-gateway";
 
 interface PatchSurfaceBody {
   Name?: string;
@@ -26,23 +31,24 @@ export const patchSurface = all([surfaceTable.name, playlistsTable.name]).apply(
     mkLambda(
       "patchSurface",
       async (ev, ctx) => {
+        const r = mkResponses();
         const owner = ev.requestContext.authorizer.jwt.claims.sub;
         if (typeof owner !== "string") {
-          return r(403, {}, { error: "Nope" });
+          return r.forbidden();
         }
 
         (getSegment() as Segment).setUser(owner);
 
         const surfaceId = ev.pathParameters?.surfaceId;
         if (surfaceId === undefined || surfaceId.length === 0) {
-          return r(404, {}, { error: "Surface not found" });
+          return r.notFound();
         }
 
         const dynamo = captureAWSClient(new DynamoDB());
 
         const { body } = ev;
         if (body == null) {
-          return r(400, {}, { error: "Invalid body" });
+          return r.badRequest();
         }
 
         var surfaceInfo: PatchSurfaceBody;
@@ -53,7 +59,7 @@ export const patchSurface = all([surfaceTable.name, playlistsTable.name]).apply(
             throw new Error("Invalid body");
           }
         } catch (err) {
-          return r(400, {}, { error: "Invalid body" });
+          return r.badRequest();
         }
 
         try {
@@ -81,14 +87,10 @@ export const patchSurface = all([surfaceTable.name, playlistsTable.name]).apply(
             const item = playlistGet.Item;
 
             if (item == undefined) {
-              return r(
-                422,
-                {},
-                {
-                  error:
-                    "Playlist ID must exist (use null to clear current PlaylistId)"
-                }
-              );
+              return r.unprocessableEntity({
+                error:
+                  "Playlist ID must exist (use null to clear current PlaylistId)"
+              });
             }
           }
 
@@ -142,17 +144,17 @@ export const patchSurface = all([surfaceTable.name, playlistsTable.name]).apply(
                 "Failed to get surface after updating, this is... weird",
                 updatedSurfaceRequest.$response.error
               );
-              return r(404, {}, { error: "Surface not found" });
+              return r.notFound();
             }
 
             const updatedSurface = DynamoDB.Converter.unmarshall(
               updatedSurfaceRaw
             ) as Surface;
 
-            return r(200, {}, { surface: updatedSurface });
+            return r.ok({}, { surface: updatedSurface });
           } catch (err) {
             if (err instanceof ConditionalCheckFailedException) {
-              return r(404, {}, { error: "Surface not found" });
+              return r.notFound();
             } else {
               throw err;
             }

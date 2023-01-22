@@ -1,8 +1,9 @@
 import { lambdaRole } from "../../roles/lambdaRole";
-import { mkLambda } from "../../helpers/mkLambda";
+import { mkLambda, mkResponses } from "../../helpers/mkLambda";
 import { DynamoDB } from "aws-sdk";
 import { surfaceTable } from "../../tables/surfaceTable";
 import { captureAWSClient, getSegment, Segment } from "aws-xray-sdk-core";
+import { optionsHeaders } from "../optionsHeaders";
 
 export const listSurfaces = surfaceTable.name.apply((tableName) =>
   mkLambda(
@@ -10,14 +11,10 @@ export const listSurfaces = surfaceTable.name.apply((tableName) =>
     async (ev, ctx) => {
       const owner = ev.requestContext.authorizer.jwt.claims.sub;
 
+      const r = mkResponses();
+
       if (typeof owner !== "string") {
-        return {
-          statusCode: 403,
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({ error: "Nope" })
-        };
+        return r.forbidden({}, { error: "Nope" });
       }
 
       (getSegment() as Segment).setUser(`${owner}`);
@@ -44,26 +41,9 @@ export const listSurfaces = surfaceTable.name.apply((tableName) =>
           DynamoDB.Converter.unmarshall(item)
         );
 
-        return {
-          statusCode: 200,
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({ items: returnable })
-        };
+        return r.ok({}, { items: returnable });
       } catch (error) {
-        console.log("Error", error);
-        return {
-          statusCode: 200,
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({
-            error: "Nope",
-            // TODO: Remove this (leaking error message)
-            message: (error as Error).message
-          })
-        };
+        return r.internalServerError("List surfaces error:", error);
       }
     },
     lambdaRole

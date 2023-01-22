@@ -5,6 +5,7 @@ import {
   APIGatewayProxyStructuredResultV2,
   S3Event
 } from "aws-lambda";
+import { optionsHeaders } from "../routes/optionsHeaders";
 import { betterLambdaName } from "./betterLambdaName";
 
 const bucket = new s3.Bucket("art-lambdas", {
@@ -73,13 +74,68 @@ export const r = (
   statusCode: number,
   headers: Headers = {},
   body?: unknown
-) => ({
-  statusCode,
-  headers: { "content-type": "application/json", ...headers },
-  body: body !== null ? JSON.stringify(body) : undefined
-});
+) => {
+  return {
+    statusCode,
+    headers: { "content-type": "application/json", ...headers },
+    body: body !== null ? JSON.stringify(body) : undefined
+  };
+};
 
 export const internalServerError = (notes: string, error: unknown) => {
   console.log(`Error from ${notes}`, error);
   return r(500, {}, { error: "Internal server error" });
+};
+
+export const mkResponses = () => {
+  const mkResponse = (
+    statusCode: number,
+    headers: Headers = {},
+    body?: unknown
+  ) => {
+    return {
+      statusCode,
+      headers: {
+        "content-type": "application/json",
+        ...headers
+      },
+      body: body !== null ? JSON.stringify(body) : undefined
+    };
+  };
+  return {
+    ok: (headers: Headers = {}, body?: unknown) => {
+      return mkResponse(200, headers, body);
+    },
+    forbidden: (headers: Headers = {}, body: unknown = { error: "Nope" }) => {
+      return mkResponse(403, headers, body);
+    },
+    notFound: (
+      body: unknown = { error: "Not found" },
+      headers: Headers = {}
+    ) => {
+      return mkResponse(404, headers, body);
+    },
+    badRequest: (
+      body: unknown = { error: "Bad request" },
+      headers: Headers = {}
+    ) => {
+      return mkResponse(400, headers, body);
+    },
+    unprocessableEntity: (
+      body: unknown = { error: "Unprocessable Entity" },
+      headers: Headers = {}
+    ) => {
+      return mkResponse(422, headers, body);
+    },
+    internalServerError: (notes: string, error: unknown) => {
+      console.log(`Error from ${notes}`, error);
+      return mkResponse(
+        500,
+        {},
+        {
+          error: "Internal server error"
+        }
+      );
+    }
+  };
 };

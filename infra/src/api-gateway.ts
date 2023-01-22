@@ -5,16 +5,18 @@ import { apiRole } from "./roles/apiRole";
 import { mkRoutes } from "./helpers/LambdaRoute";
 import { routes } from "./routes";
 
+export const corsConfiguration = {
+  allowCredentials: true,
+  allowHeaders: ["authorization", "content-type"],
+  allowMethods: ["GET", "POST", "PATCH"],
+  allowOrigins: ["http://localhost:1234"]
+};
+
 const api = new apigatewayv2.Api("art-apigw", {
   protocolType: "HTTP",
   description: `${getProject()} ${getStack()} API`,
   name: `${getProject()}-${getStack()}`,
-  corsConfiguration: {
-    allowCredentials: true,
-    allowHeaders: ["authorization", "content-type"],
-    allowMethods: ["GET", "POST"],
-    allowOrigins: ["http://localhost:1234"]
-  }
+  corsConfiguration
 });
 
 const authorizer = new apigatewayv2.Authorizer("art-apigw/authorizer", {

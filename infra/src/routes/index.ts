@@ -12,6 +12,7 @@ import { listPlaylists } from "./handlers/playlists/listPlaylists";
 import { getPlaylist } from "./handlers/playlists/getPlaylist";
 import { patchPlaylist } from "./handlers/playlists/patchPlaylist";
 import { patchSurface } from "./handlers/surfaces/patchSurface";
+import { options } from "./options";
 
 export const routes: LambdaRouteInfo[] = [
   {
@@ -104,5 +105,12 @@ export const routes: LambdaRouteInfo[] = [
     lambda: patchPlaylist,
     scopes: ["asset:write"],
     description: "Update playlist"
+  },
+  {
+    method: "OPTIONS",
+    path: "/{proxy+}",
+    lambda: options,
+    scopes: undefined,
+    description: "CORS"
   }
 ];

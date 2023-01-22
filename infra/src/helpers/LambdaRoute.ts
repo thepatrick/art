@@ -91,10 +91,10 @@ export class LambdaRoute extends ComponentResource {
 }
 
 export interface LambdaRouteInfo {
-  method: "GET" | "POST" | "PATCH";
+  method: "GET" | "POST" | "PATCH" | "OPTIONS";
   path: string;
   lambda: Input<lambda.Function>;
-  scopes: string[];
+  scopes?: string[];
   description: string;
 }
 
@@ -123,7 +123,7 @@ export const mkRoutes = (
         apiRole,
         lambda: curr.lambda,
         routeKey: `${curr.method} ${curr.path}`,
-        authorization: {
+        authorization: curr.scopes && {
           scopes: curr.scopes,
           id: authorizer.id,
           type: "JWT"
