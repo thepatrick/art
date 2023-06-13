@@ -5,7 +5,7 @@
     "@types/node": "^18.0.0"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.214.0",
+    "@aws-sdk/client-dynamodb": "^3.351.0",
     "@pulumi/aws": "5.28.0",
     "@pulumi/pulumi": "^3.0.0",
     "@pulumi/random": "^4.8.2",
