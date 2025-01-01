@@ -2,7 +2,7 @@
   "name": "art-infra",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.108",
-    "@types/node": "^18.0.0"
+    "@types/node": "^22.0.0"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.214.0",
