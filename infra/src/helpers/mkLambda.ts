@@ -1,5 +1,6 @@
 import { iam, lambda, s3 } from "@pulumi/aws";
 import { region } from "@pulumi/aws/config";
+import { Input } from "@pulumi/pulumi";
 import {
   APIGatewayProxyEventV2WithJWTAuthorizer,
   APIGatewayProxyStructuredResultV2,
@@ -22,6 +23,28 @@ new s3.BucketPublicAccessBlock(
   },
   { parent: bucket }
 );
+
+export const mkSwiftLambda = (
+  name: string,
+  s3Bucket: string,
+  s3Key: string,
+  role: iam.Role,
+  handler: string,
+  architecture: "arm64" | "amd64" = "arm64",
+  memorySize?: Input<number>,
+  environment?: Input<{ [key: string]: Input<string> }>
+) =>
+  new lambda.Function(name, {
+    name: betterLambdaName(name),
+    s3Bucket,
+    s3Key,
+    architectures: [architecture],
+    role: role.arn,
+    memorySize: memorySize,
+    runtime: "provided.al2",
+    handler,
+    environment
+  });
 
 export const mkLambda = (
   name: string,

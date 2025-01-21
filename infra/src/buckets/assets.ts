@@ -28,16 +28,16 @@ const allowBucket = new lambda.Permission("art-asssets/new-file", {
   sourceArn: assetsBucket.arn
 });
 
-new s3.BucketNotification(
-  "art-assets",
-  {
-    bucket: assetsBucket.id,
-    lambdaFunctions: [
-      {
-        lambdaFunctionArn: processAsset.arn,
-        events: ["s3:ObjectCreated:*"]
-      }
-    ]
-  },
-  { dependsOn: [assetsBucket, processAsset] }
-);
+// new s3.BucketNotification(
+//   "art-assets",
+//   {
+//     bucket: assetsBucket.id,
+//     lambdaFunctions: [
+//       {
+//         lambdaFunctionArn: processAsset.arn,
+//         events: ["s3:ObjectCreated:*"]
+//       }
+//     ]
+//   },
+//   { dependsOn: [assetsBucket, processAsset] }
+// );
